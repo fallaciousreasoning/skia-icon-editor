@@ -18,6 +18,10 @@
             min-width: 100%;
             min-height: 50vh;
         }
+
+        svg.selected {
+            border: 1px solid red;
+        }
     </style>
 </head>
 
@@ -246,7 +250,7 @@
             const file = e.target.files[0];
             const text = new TextDecoder().decode(await file.arrayBuffer());
 
-            iconEditor.textContent = text;
+            iconEditor.value = text;
             updateIcon(text);
         });
 
