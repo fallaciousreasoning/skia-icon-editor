@@ -19,6 +19,21 @@
             min-height: 50vh;
         }
 
+        #iconContainer {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        svg {
+            border: 1px solid transparent;
+        }
+
+        svg:hover {
+            border: 1px solid gray;
+        }
+
         svg.selected {
             border: 1px solid red;
         }
@@ -28,7 +43,7 @@
 <body class="column">
     <label class="column">
         Pick a .icon file
-        <input id="filePicker" type="file" accept=".icon" />
+        <input id="filePicker" type="file" accept=".icon" multiple />
     </label>
     <textarea id="iconEditor" aria-multiline="true"></textarea>
     <div id="iconContainer"></div>
@@ -232,30 +247,51 @@
         const iconEditor = document.querySelector('#iconEditor');
         const iconContainer = document.querySelector('#iconContainer');
 
-        const updateIcon = (text) => {
+        let editingIcon;
+        const setEditing = (name) => {
+            if (editingIcon) editingIcon.classList.remove('selected')
+
+            editingIcon = document.querySelector(`[data-name="${name}"]`);
+            editingIcon.classList.add('selected')
+            iconEditor.value = editingIcon.getAttribute('data-text');
+        }
+
+        const updateIcon = (text, name) => {
             try {
                 const lines = text.split('\n').filter(l => l && !l.startsWith('//'));
                 const commands = lines.map(l => l.trim().split(',').filter(c => c))
 
                 const icon = new VectorIcon(commands);
                 const svg = icon.paint();
+                svg.setAttribute('data-name', name);
+                svg.setAttribute('data-text', text);
+                svg.addEventListener('click', () => setEditing(name))
 
-                iconContainer.replaceChildren(svg);
+                const existing = document.querySelector(`[data-name="${name}"]`)
+                if (existing)
+                    iconContainer.replaceChild(svg, existing)
+                else iconContainer.appendChild(svg)
+
+                if (existing?.classList.contains('selected')) setEditing(name)
             } catch (err) {
                 console.log(err);
             }
         }
 
         picker.addEventListener('change', async e => {
-            const file = e.target.files[0];
-            const text = new TextDecoder().decode(await file.arrayBuffer());
+            for (const file of e.target.files) {
+                const text = new TextDecoder().decode(await file.arrayBuffer());
 
-            iconEditor.value = text;
-            updateIcon(text);
+                updateIcon(text, file.name);
+            }
+
+            if (!editingIcon)
+                setEditing(e.target.files[0].name);
         });
 
         iconEditor.addEventListener('input', e => {
-            updateIcon(e.target.value)
+            if (!editingIcon) return
+            updateIcon(e.target.value, editingIcon.getAttribute('data-name'))
         })
     </script>
 </body>
