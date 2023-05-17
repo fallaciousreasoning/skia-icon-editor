@@ -14,16 +14,26 @@
             gap: 4px;
         }
 
+        .row {
+            display: flex;
+            flex-direction: row;
+            gap: 4px;
+        }
+
         #iconEditor {
             min-width: 100%;
             min-height: 50vh;
         }
 
         #iconContainer {
-            display: flex;
-            flex-direction: row;
-            gap: 5px;
             flex-wrap: wrap;
+        }
+
+        .footer { 
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            justify-content: end;
         }
 
         svg {
@@ -41,12 +51,13 @@
 </head>
 
 <body class="column">
+    <div class="footer row"><a href="https://github.com/fallaciousreasoning/skia-icon-editor" target="_blank">Github</a></div>
     <label class="column">
         Pick a .icon file
         <input id="filePicker" type="file" accept=".icon" multiple />
     </label>
     <textarea id="iconEditor" aria-multiline="true"></textarea>
-    <div id="iconContainer"></div>
+    <div id="iconContainer" class="row"></div>
 
     <script type="module">
         const SVG_NS = 'http://www.w3.org/2000/svg';
