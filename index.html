@@ -243,6 +243,10 @@
                     'R_CUBIC_TO': 'c',
                     'CUBIC_TO_SHORTHAND': 'S',
                     'CLOSE': 'Z',
+                    'QUADRATIC_TO': "Q",
+                    'R_QUADRATIC_TO': 'q',
+                    'QUADRATIC_TO_SHORTHAND': 'T',
+                    'R_QUADRATIC_TO_SHORTHAND': 't'
                 };
                 if (cmd[0] in drawCommands) {
                     var nc = [drawCommands[cmd[0]]].concat(cmd.splice(1).map(parseFloat));
